@@ -15,9 +15,12 @@ if __name__ == "__main__":
     for name,data in zip(Data.Name_List, Data.Data_List):
 
         method = ML_Methods(name=name, dataset=data)
-        method.preprocess(method.dataset)
+        x, y = method.preprocess(data)
 
-        # spliting the datset (not implemented yet)
+        # spliting the dataset
+        x_train, x_test, y_train, y_test = method.trainValSplit_Kfold(data)
+
+        print(x_train)
 
         # ... add your methods here in the loop
         # you can add the method's function in ML_Methods object (Like that simple QDA)
