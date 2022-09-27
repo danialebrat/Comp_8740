@@ -4,7 +4,7 @@ from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis, LinearD
 from sklearn.naive_bayes import GaussianNB, BernoulliNB, MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, accuracy_score
 import numpy as np
 from sklearn.model_selection import StratifiedKFold, cross_val_score, RepeatedKFold
 from sklearn.model_selection import train_test_split
@@ -105,7 +105,7 @@ class ML_Methods:
 
         return Models
 
-    def Models_accuracy(self, Models, x_train, y_train, dataset_name):
+    def Kfold_report(self, Models, x_train, y_train, dataset_name):
         """
         training all the models from the list of models using 10 fold cross validation
 
@@ -113,6 +113,8 @@ class ML_Methods:
         :param y_train:
         :return:
         """
+
+
 
         print("**********")
         print("{} Dataset Results: ".format(dataset_name))
@@ -125,9 +127,20 @@ class ML_Methods:
             CrossValidation = cross_val_score(model, x_train, y_train, cv=KFold, scoring="accuracy")
             results.append(CrossValidation)
             method_names.append(name)
-            print(f"{name} Accuracy : {CrossValidation.mean()*100:.2f}%")
+            print(f"{name} Training Accuracy : {CrossValidation.mean()*100:.2f}%")
 
         return results, method_names
+
+
+    def training_models(self, Models, x_train, x_test, y_train, y_test, datasetname):
+
+        for name, model in Models:
+            model.fit(x_train, y_train)
+            predicted = model.predict(x_test)
+            cm = confusion_matrix(y_test, predicted)
+            AS = accuracy_score(y_test, predicted)
+
+            self.confusion_metrics(cm, AS, name, datasetname)
 
     def QDA(self):
         """
@@ -203,17 +216,23 @@ class ML_Methods:
         plt.title("Classifiers Comparison _ {}".format(dataset_name))
         plt.show()
 
-    def confusion_metrics(conf_matrix):
+    def confusion_metrics(self, conf_matrix, accuracy_score, method_name, dataset_name):
+
         TP = conf_matrix[1][1]
         TN = conf_matrix[0][0]
         FP = conf_matrix[0][1]
         FN = conf_matrix[1][0]
+
         # calculate the sensitivity
-        conf_sensitivity = (TP / float(TP + FN))
+        conf_sensitivity = (TP / (float(TP + FN)+ 0.000001))
         # calculate the specificity
-        conf_specificity = (TN / float(TN + FP))
+        conf_specificity = (TN / (float(TN + FP) + 0.000001))
         # calculate PPV
-        ppv = (TP / float(TP + FP))
+        ppv = (TP / (float(TP + FP) + 0.000001))
         # calculate NPV
-        npv = (TN / float(TN + FN))
-        print("PPV:{} NPV:{} Sensitivity:{} Specificity:{}".format(ppv, npv, conf_sensitivity, conf_specificity))
+        npv = (TN / (float(TN + FN) + 0.000001))
+
+        print("**************")
+        print("Classifier: {} _ Dataset: {}".format(method_name, dataset_name))
+        print("PPV:{:.2f} NPV:{:.2f} Sensitivity:{:.2f} Specificity:{:.2f}".format(ppv, npv, conf_sensitivity, conf_specificity))
+        print("Accuracy Score for test_set: {:.2f} ".format(accuracy_score))

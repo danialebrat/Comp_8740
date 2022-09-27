@@ -25,9 +25,11 @@ if __name__ == "__main__":
         Models = method.adding_methods()
 
         # train the models and getting the results
-        results, method_name = method.Models_accuracy(Models, x_train, y_train, name)
+        results, method_name = method.Kfold_report(Models, x_train, y_train, name)
 
         method.plotting(results, method_name, name)
+
+        method.training_models(Models, x_train, x_test, y_train, y_test, name)
 
 
 
