@@ -78,9 +78,6 @@ class ML_Methods:
         scaler = MinMaxScaler()
         x = scaler.fit_transform(X)
 
-        print(x.shape)
-        print(y.shape)
-
         return x, y
 
     def adding_methods(self):
@@ -115,7 +112,7 @@ class ML_Methods:
             CrossValidation = cross_val_score(model, x_train, y_train, cv=KFold, scoring="accuracy")
             results.append(CrossValidation)
             method_name.append(name)
-            print(f"{Name} Accuracy : {CrossValidation.mean()*100:.2f}%")
+            print(f"{name} Accuracy : {CrossValidation.mean()*100:.2f}%")
 
     def QDA(self):
         """
