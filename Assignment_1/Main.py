@@ -16,13 +16,20 @@ if __name__ == "__main__":
 
         # creating and ML_method object for each dataset
         method = ML_Methods(name=name, dataset=data)
+        X, Y = method.preprocess(data)
 
         # spliting the dataset
-        x_train, x_test, y_train, y_test = method.trainValSplit_Kfold(data)
+        x_train, x_test, y_train, y_test = method.data_spliting(X, Y)
 
-        print(x_train)
+        # Adding methods:
+        Models = method.adding_methods()
 
-        # ... add your methods here in the loop
+        # train the models
+        method.Train_Models(x_train, y_train)
+
+
+        #performing methods for each fold
+        #for x_train, y_train, x_test, y_test in zip(x_trains, x_tests, y_trains, y_tests):
         # you can add the method's function in ML_Methods object (Like that simple QDA)
 
 

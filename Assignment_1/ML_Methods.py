@@ -1,7 +1,8 @@
-from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis, LinearDiscriminantAnalysis
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
-from sklearn.model_selection import RepeatedKFold
+from sklearn.model_selection import StratifiedKFold, cross_val_score, RepeatedKFold
+from sklearn.model_selection import train_test_split
 
 
 class ML_Methods:
@@ -47,27 +48,30 @@ class ML_Methods:
         scaler = MinMaxScaler()
         X = scaler.fit_transform(raw_X)
 
-        x_train = []
-        x_test = []
-        y_train = []
-        y_test = []
+        x_trains = []
+        x_tests = []
+        y_trains = []
+        y_tests = []
 
-        kf = RepeatedKFold(n_splits=num_split, n_repeats=num_repeat, random_state=random_state)
+        kf = RepeatedKFold(n_splits=num_split, n_repeats=num_repeat, random_state=random_state, shuffle=True)
         for train_index, test_index in kf.split(X):
             # print("Train:", train_index, "Validation:",test_index)
-            x_train.append(X[train_index])
-            x_test.append(X[test_index])
-            y_train.append(Y[train_index])
-            y_test.append(Y[test_index])
+            x_trains.append(X[train_index])
+            x_tests.append(X[test_index])
+            y_trains.append(Y[train_index])
+            y_tests.append(Y[test_index])
 
-        print("X_train shape: ".format(np.array(x_train).shape))
-        print("X_test shape: ".format(np.array(x_test).shape))
-        print("Y_test shape: ".format(np.array(y_train).shape))
-        print("Y_test shape: ".format(np.array(y_test).shape))
-
-        return x_train, x_test, y_train, y_test
+        return x_trains, x_tests, y_trains, y_tests
 
     def preprocess(self, df):
+        """
+        create x and y from a pandas dataframe
+        x, which are 2D point will be scaled using min-max scaler
+
+        :param dataframe:
+        :return (Scaled X (minmax), y):
+        """
+
         X = df.iloc[:, :-1].values
         y = df.iloc[:, -1].values
 
@@ -79,14 +83,69 @@ class ML_Methods:
 
         return x, y
 
-    def QDA(self, x_train, y_train):
-        QDA_model = QuadraticDiscriminantAnalysis()
-        QDA_model.fit(x_train, y_train)
-        return QDA_model
+    def adding_methods(self):
+        """
+        adding all the methods with their specific names in a list
 
-# X = np.array([[-1, -1], [-2, -1], [-3, -2], [1, 1], [2, 1], [3, 2]])
-# y = np.array([1, 1, 1, 2, 2, 2])
-# clf = QuadraticDiscriminantAnalysis()
-# clf.fit(X, y)
-# QuadraticDiscriminantAnalysis()
-# print(clf.predict([[-0.8, -1]]))
+        :return: a List containing tuple of models (name of the model, model)
+        """
+
+        Models = []
+
+        # models
+        Models.append(self.QDA())
+        Models.append(self.LDA())
+
+        return Models
+
+
+    def Train_Models(self, Models, x_train, y_train):
+        """
+        training all the models from the list of models using 10 fold cross validation
+
+        :param x_train:
+        :param y_train:
+        :return:
+        """
+        results = []
+        method_name = []
+        for name, model in Models:
+            # train the models
+            KFold = StratifiedKFold(n_splits=10, random_state=1, shuffle=True)
+            CrossValidation = cross_val_score(model, x_train, y_train, cv=KFold, scoring="accuracy")
+            results.append(CrossValidation)
+            method_name.append(name)
+            print(f"{Name} Accuracy : {CrossValidation.mean()*100:.2f}%")
+
+    def QDA(self):
+        """
+        create a quadratic-discriminant-analysis classifier
+        :return (name of the mode, QDA model):
+        """
+        name = "QDA"
+        QDA_model = QuadraticDiscriminantAnalysis()
+        return (name , QDA_model)
+
+
+    def LDA(self):
+        """
+        create a linear-discriminant-analysis classifier
+        :return (name of the mode, QDA model):
+        """
+        name = "LDA"
+        clf = LinearDiscriminantAnalysis()
+        return (name, clf)
+
+
+    def data_spliting(self, x, y, test_size=0.1, random_state=1):
+        """
+        Split the data into x_train, x_test, y_train, y_test
+
+        :param x: x (data)
+        :param y: y (labels)
+        :param test_size: size of test dataset
+        :param random_state: 1 or 0
+        :return: x_train, x_test, y_train, y_test
+        """
+        x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=test_size, random_state=random_state)
+        return x_train, x_test, y_train, y_test
