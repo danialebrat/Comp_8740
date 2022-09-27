@@ -3,6 +3,7 @@ from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 from sklearn.model_selection import StratifiedKFold, cross_val_score, RepeatedKFold
 from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
 
 
 class ML_Methods:
@@ -96,7 +97,7 @@ class ML_Methods:
         return Models
 
 
-    def Train_Models(self, Models, x_train, y_train):
+    def Train_Models(self, Models, x_train, y_train, dataset_name):
         """
         training all the models from the list of models using 10 fold cross validation
 
@@ -104,15 +105,21 @@ class ML_Methods:
         :param y_train:
         :return:
         """
+
+        print("**********")
+        print("{} Dataset Results: ".format(dataset_name))
+
         results = []
-        method_name = []
+        method_names = []
         for name, model in Models:
             # train the models
             KFold = StratifiedKFold(n_splits=10, random_state=1, shuffle=True)
             CrossValidation = cross_val_score(model, x_train, y_train, cv=KFold, scoring="accuracy")
             results.append(CrossValidation)
-            method_name.append(name)
+            method_names.append(name)
             print(f"{name} Accuracy : {CrossValidation.mean()*100:.2f}%")
+
+        return results, method_names
 
     def QDA(self):
         """
@@ -146,3 +153,11 @@ class ML_Methods:
         """
         x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=test_size, random_state=random_state)
         return x_train, x_test, y_train, y_test
+
+
+    def plotting(self, results, names, dataset_name):
+
+        plt.figure(figsize=(12, 10))
+        plt.boxplot(results, labels=names)
+        plt.title("Classifiers Comparison _ {}".format(dataset_name))
+        plt.show()
