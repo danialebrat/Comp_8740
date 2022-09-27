@@ -24,13 +24,11 @@ if __name__ == "__main__":
         # Adding methods:
         Models = method.adding_methods()
 
-        # train the models
-        method.Train_Models(Models, x_train, y_train, name)
+        # train the models and getting the results
+        results, method_name = method.Train_Models(Models, x_train, y_train, name)
 
+        method.plotting(results, method_name)
 
-        #performing methods for each fold
-        #for x_train, y_train, x_test, y_test in zip(x_trains, x_tests, y_trains, y_tests):
-        # you can add the method's function in ML_Methods object (Like that simple QDA)
 
 
 
