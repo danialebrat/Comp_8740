@@ -25,9 +25,9 @@ if __name__ == "__main__":
         Models = method.adding_methods()
 
         # train the models and getting the results
-        results, method_name = method.Train_Models(Models, x_train, y_train, name)
+        results, method_name = method.Models_accuracy(Models, x_train, y_train, name)
 
-        method.plotting(results, method_name)
+        method.plotting(results, method_name, name)
 
 
 
