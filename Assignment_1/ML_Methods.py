@@ -141,7 +141,7 @@ class ML_Methods:
         return (name, clf)
 
 
-    def data_spliting(self, x, y, test_size=0.1, random_state=1):
+    def data_spliting(self, x, y, test_size=0.2, random_state=1):
         """
         Split the data into x_train, x_test, y_train, y_test
 
