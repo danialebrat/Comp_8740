@@ -1,5 +1,10 @@
+from ast import Mod
+from unicodedata import name
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis, LinearDiscriminantAnalysis
+from sklearn.naive_bayes import GaussianNB, BernoulliNB, MultinomialNB
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import confusion_matrix
 import numpy as np
 from sklearn.model_selection import StratifiedKFold, cross_val_score, RepeatedKFold
 from sklearn.model_selection import train_test_split
@@ -93,11 +98,14 @@ class ML_Methods:
         # models
         Models.append(self.QDA())
         Models.append(self.LDA())
+        Models.append(self.KNN())
+        Models.append(self.Gaussian_Naive_Bayes())
+        Models.append(self.Bernoulli_Naive_Bayes())
+        Models.append(self.Multinomial_Naive_Bayes())
 
         return Models
 
-
-    def Train_Models(self, Models, x_train, y_train, dataset_name):
+    def Models_accuracy(self, Models, x_train, y_train, dataset_name):
         """
         training all the models from the list of models using 10 fold cross validation
 
@@ -128,8 +136,7 @@ class ML_Methods:
         """
         name = "QDA"
         QDA_model = QuadraticDiscriminantAnalysis()
-        return (name , QDA_model)
-
+        return (name, QDA_model)
 
     def LDA(self):
         """
@@ -140,6 +147,41 @@ class ML_Methods:
         clf = LinearDiscriminantAnalysis()
         return (name, clf)
 
+    def KNN(self):
+        """
+        create a KNN classifier
+        :return (name of the mode, KNN model):
+        """
+        name = "KNN"
+        KNN_Model = KNeighborsClassifier(n_neighbors=10, metric='minkowski', p=2)
+        return (name, KNN_Model)
+
+    def Gaussian_Naive_Bayes(self):
+        """
+        create a Gaussian Naive Bayes classifier
+        :return (name of the mode, Naive Bayes model):
+        """
+        name = "GNB"
+        Gaussian_Naive_Model = GaussianNB()
+        return (name, Gaussian_Naive_Model)
+
+    def Bernoulli_Naive_Bayes(self):
+        """
+        create a Bernoulli Naive Bayes classifier
+        :return (name of the mode, Naive Bayes model):
+        """
+        name = "BNB"
+        Bernoulli_Naive_Model = BernoulliNB()
+        return (name, Bernoulli_Naive_Model)
+
+    def Multinomial_Naive_Bayes(self):
+        """
+        create a Multinomial Naive Bayes classifier
+        :return (name of the mode, Naive Bayes model):
+        """
+        name = "MNB"
+        Multinomial_Naive_Model = MultinomialNB()
+        return (name, Multinomial_Naive_Model)
 
     def data_spliting(self, x, y, test_size=0.2, random_state=1):
         """
@@ -154,10 +196,24 @@ class ML_Methods:
         x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=test_size, random_state=random_state)
         return x_train, x_test, y_train, y_test
 
-
     def plotting(self, results, names, dataset_name):
 
         plt.figure(figsize=(12, 10))
         plt.boxplot(results, labels=names)
         plt.title("Classifiers Comparison _ {}".format(dataset_name))
         plt.show()
+
+    def confusion_metrics(conf_matrix):
+        TP = conf_matrix[1][1]
+        TN = conf_matrix[0][0]
+        FP = conf_matrix[0][1]
+        FN = conf_matrix[1][0]
+        # calculate the sensitivity
+        conf_sensitivity = (TP / float(TP + FN))
+        # calculate the specificity
+        conf_specificity = (TN / float(TN + FP))
+        # calculate PPV
+        ppv = (TP / float(TP + FP))
+        # calculate NPV
+        npv = (TN / float(TN + FN))
+        print("PPV:{} NPV:{} Sensitivity:{} Specificity:{}".format(ppv, npv, conf_sensitivity, conf_specificity))
