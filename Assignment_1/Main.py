@@ -25,7 +25,7 @@ if __name__ == "__main__":
         Models = method.adding_methods()
 
         # train the models
-        method.Train_Models(x_train, y_train)
+        method.Train_Models(Models, x_train, y_train, name)
 
 
         #performing methods for each fold
