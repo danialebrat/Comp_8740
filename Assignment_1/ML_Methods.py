@@ -236,3 +236,32 @@ class ML_Methods:
         print("Classifier: {} _ Dataset: {}".format(method_name, dataset_name))
         print("PPV:{:.2f} NPV:{:.2f} Sensitivity:{:.2f} Specificity:{:.2f}".format(ppv, npv, conf_sensitivity, conf_specificity))
         print("Accuracy Score for test_set: {:.2f} ".format(accuracy_score))
+
+    def plot_decision_boundary(self, model, X, Y, model_name, dataset_name):
+
+        # Set min and max values and give it some padding
+        x_min, x_max = X[:, 0].min() - .5, X[:, 0].max() + .5
+        y_min, y_max = X[:, 1].min() - .5, X[:, 1].max() + .5
+        h = 0.01
+
+        # Generate a grid of points with distance h between them
+        xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
+        x_in = np.c_[xx.ravel(), yy.ravel()]
+
+        # Predict the function value for the whole gid
+        y_pred = model.predict(x_in)
+        y_pred = np.round(y_pred).reshape(xx.shape)
+
+        # Plot the contour and training examples
+        plt.contourf(xx, yy, y_pred, cmap="Pastel1")
+        plt.scatter(X[:, 0], X[:, 1], c=Y, s=40, cmap="Pastel2")
+        plt.xlim(xx.min(), xx.max())
+        plt.ylim(yy.min(), yy.max())
+
+
+        title = "Decision boundry of {} on {}". format(model_name, dataset_name)
+        plt.title(title)
+        plt.show()
+
+
+

@@ -31,6 +31,11 @@ if __name__ == "__main__":
 
         method.training_models(Models, x_train, x_test, y_train, y_test, name)
 
+        for model_name, model in Models:
+
+            method.plot_decision_boundary(model, X, Y, model_name, name)
+
+
 
 
 
