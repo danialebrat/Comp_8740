@@ -11,6 +11,9 @@ from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 
 
+PLOT_PATH = "C:/Users/User/PycharmProjects/Comp_8740/Assignment_1/Assignment_1/Plots/"
+
+
 class ML_Methods:
 
     def __init__(self, name, dataset):
@@ -212,9 +215,22 @@ class ML_Methods:
     def plotting(self, results, names, dataset_name):
 
         plt.figure(figsize=(12, 10))
-        plt.boxplot(results, labels=names)
-        plt.title("Classifiers Comparison _ {}".format(dataset_name))
-        plt.show()
+        boxplot = plt.boxplot(results, patch_artist=True, labels=names)
+
+
+        # fill with colors
+        colors = ['pink', 'lightblue', 'lightgreen', 'lime', 'grey']
+        for box, color in zip(boxplot['boxes'], colors):
+            box.set(color=color)
+
+        title = "Classifiers Comparison _ {}".format(dataset_name)
+        plt.title(title)
+
+        # saving the plots
+        fname = PLOT_PATH + title + ".png"
+        plt.savefig(fname, dpi=100)
+        plt.close('all')
+
 
     def confusion_metrics(self, conf_matrix, accuracy_score, method_name, dataset_name):
 
@@ -261,7 +277,11 @@ class ML_Methods:
 
         title = "Decision boundry of {} on {}". format(model_name, dataset_name)
         plt.title(title)
-        plt.show()
+
+        # saving the plots
+        fname = PLOT_PATH + title + ".png"
+        plt.savefig(fname, dpi=100)
+        plt.close('all')
 
 
 
