@@ -1,5 +1,3 @@
-from ast import Mod
-from unicodedata import name
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis, LinearDiscriminantAnalysis
 from sklearn.naive_bayes import GaussianNB, BernoulliNB, MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
