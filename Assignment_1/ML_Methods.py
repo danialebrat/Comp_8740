@@ -11,7 +11,7 @@ from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 
 
-PLOT_PATH = "C:/Users/farha/OneDrive - University of Windsor/Courses/Machine Learning & Pattern Recog/Assignment 1/Comp_8740-1/Assignment_1/Plots"
+PLOT_PATH = "Assignment_1\Plots"
 
 
 class ML_Methods:
