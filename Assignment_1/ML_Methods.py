@@ -1,6 +1,9 @@
+from unicodedata import name
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis, LinearDiscriminantAnalysis
 from sklearn.naive_bayes import GaussianNB, BernoulliNB, MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import confusion_matrix, accuracy_score
 import numpy as np
@@ -9,7 +12,7 @@ from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 
 
-PLOT_PATH = "C:/Users/User/PycharmProjects/Comp_8740/Assignment_1/Assignment_1/Plots/"
+PLOT_PATH = "C:/Users/farha/OneDrive - University of Windsor/Courses/Machine Learning & Pattern Recog/Assignment 1/Comp_8740-1/Assignment_1/Plots"
 
 
 class ML_Methods:
@@ -96,13 +99,16 @@ class ML_Methods:
 
         Models = []
 
+        Models.append(self.SVM_Linear())
+        Models.append(self.SVM_rbf())
+        Models.append(self.SVM_polynomial())
         # models
-        Models.append(self.QDA())
-        Models.append(self.LDA())
-        Models.append(self.KNN())
-        Models.append(self.Gaussian_Naive_Bayes())
-        Models.append(self.Bernoulli_Naive_Bayes())
-        Models.append(self.Multinomial_Naive_Bayes())
+        # Models.append(self.QDA())
+        # Models.append(self.LDA())
+        # Models.append(self.KNN())
+        # Models.append(self.Gaussian_Naive_Bayes())
+        # Models.append(self.Bernoulli_Naive_Bayes())
+        # Models.append(self.Multinomial_Naive_Bayes())
 
         return Models
 
@@ -143,59 +149,86 @@ class ML_Methods:
 
             self.confusion_metrics(cm, AS, name, datasetname)
 
-    def QDA(self):
-        """
-        create a quadratic-discriminant-analysis classifier
-        :return (name of the mode, QDA model):
-        """
-        name = "QDA"
-        QDA_model = QuadraticDiscriminantAnalysis()
-        return (name, QDA_model)
+    def SVM_Linear(self):
+    #     """
+    #     create a SVM classifier
+    #     :return (name of the mode, QDA model):
+    #     """
+        name = "SVM_Linear"
+        SVM_Linear_model = SVC(kernel = 'linear', random_state = 0)
+        return(name, SVM_Linear_model)
+    
+    def SVM_rbf(self):
+    #     """
+    #     create a SVM classifier
+    #     :return (name of the mode, QDA model):
+    #     """
+        name = "SVM_rbf"
+        SVM_rbf_model = SVC(kernel = 'rbf', random_state = 0)
+        return(name, SVM_rbf_model)
+    
+    def SVM_polynomial(self):
+    #     """
+    #     create a SVM classifier
+    #     :return (name of the mode, QDA model):
+    #     """
+        name = "SVM_polynomial"
+        SVM_polynomial_model = SVC(kernel = 'poly', degree=2, random_state = 0)
+        return(name, SVM_polynomial_model)
+    
+    # def QDA(self):
+    #     """
+    #     create a quadratic-discriminant-analysis classifier
+    #     :return (name of the mode, QDA model):
+    #     """
+    #     name = "QDA"
+    #     QDA_model = QuadraticDiscriminantAnalysis()
+    #     return (name, QDA_model)
 
-    def LDA(self):
-        """
-        create a linear-discriminant-analysis classifier
-        :return (name of the mode, QDA model):
-        """
-        name = "LDA"
-        clf = LinearDiscriminantAnalysis()
-        return (name, clf)
+    # def LDA(self):
+    #     """
+    #     create a linear-discriminant-analysis classifier
+    #     :return (name of the mode, QDA model):
+    #     """
+    #     name = "LDA"
+    #     clf = LinearDiscriminantAnalysis()
+    #     return (name, clf)
 
-    def KNN(self):
-        """
-        create a KNN classifier
-        :return (name of the mode, KNN model):
-        """
-        name = "KNN"
-        KNN_Model = KNeighborsClassifier(n_neighbors=10, metric='minkowski', p=2)
-        return (name, KNN_Model)
+    # def KNN(self):
+    #     """
+    #     create a KNN classifier
+    #     :return (name of the mode, KNN model):
+    #     """
+    #     name = "KNN"
+    #     KNN_Model = KNeighborsClassifier(n_neighbors=10, metric='minkowski', p=2)
+    #     return (name, KNN_Model)
 
-    def Gaussian_Naive_Bayes(self):
-        """
-        create a Gaussian Naive Bayes classifier
-        :return (name of the mode, Naive Bayes model):
-        """
-        name = "GNB"
-        Gaussian_Naive_Model = GaussianNB()
-        return (name, Gaussian_Naive_Model)
+    # def Gaussian_Naive_Bayes(self):
+    #     """
+    #     create a Gaussian Naive Bayes classifier
+    #     :return (name of the mode, Naive Bayes model):
+    #     """
+    #     name = "GNB"
+    #     Gaussian_Naive_Model = GaussianNB()
+    #     return (name, Gaussian_Naive_Model)
 
-    def Bernoulli_Naive_Bayes(self):
-        """
-        create a Bernoulli Naive Bayes classifier
-        :return (name of the mode, Naive Bayes model):
-        """
-        name = "BNB"
-        Bernoulli_Naive_Model = BernoulliNB()
-        return (name, Bernoulli_Naive_Model)
+    # def Bernoulli_Naive_Bayes(self):
+    #     """
+    #     create a Bernoulli Naive Bayes classifier
+    #     :return (name of the mode, Naive Bayes model):
+    #     """
+    #     name = "BNB"
+    #     Bernoulli_Naive_Model = BernoulliNB()
+    #     return (name, Bernoulli_Naive_Model)
 
-    def Multinomial_Naive_Bayes(self):
-        """
-        create a Multinomial Naive Bayes classifier
-        :return (name of the mode, Naive Bayes model):
-        """
-        name = "MNB"
-        Multinomial_Naive_Model = MultinomialNB()
-        return (name, Multinomial_Naive_Model)
+    # def Multinomial_Naive_Bayes(self):
+    #     """
+    #     create a Multinomial Naive Bayes classifier
+    #     :return (name of the mode, Naive Bayes model):
+    #     """
+    #     name = "MNB"
+    #     Multinomial_Naive_Model = MultinomialNB()
+    #     return (name, Multinomial_Naive_Model)
 
     def data_spliting(self, x, y, test_size=0.2, random_state=1):
         """
