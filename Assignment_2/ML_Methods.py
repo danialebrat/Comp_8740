@@ -1,3 +1,4 @@
+from unicodedata import name
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis, LinearDiscriminantAnalysis
 from sklearn.naive_bayes import GaussianNB, BernoulliNB, MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
@@ -97,6 +98,10 @@ class ML_Methods:
         Models = []
 
         # models
+        Models.append(self.SVM_Linear())
+        Models.append(self.SVM_rbf())
+        Models.append(self.SVM_polynomial())
+        
         Models.append(self.QDA())
         Models.append(self.LDA())
         Models.append(self.KNN())
@@ -143,6 +148,33 @@ class ML_Methods:
 
             self.confusion_metrics(cm, AS, name, datasetname)
 
+    def SVM_Linear(self):
+    #     """
+    #     create a SVM classifier
+    #     :return (name of the mode, QDA model):
+    #     """
+        name = "SVM_Linear"
+        SVM_Linear_model = SVC(kernel = 'linear', random_state = 0)
+        return(name, SVM_Linear_model)
+    
+    def SVM_rbf(self):
+    #     """
+    #     create a SVM classifier
+    #     :return (name of the mode, QDA model):
+    #     """
+        name = "SVM_rbf"
+        SVM_rbf_model = SVC(kernel = 'rbf', random_state = 0)
+        return(name, SVM_rbf_model)
+    
+    def SVM_polynomial(self):
+    #     """
+    #     create a SVM classifier
+    #     :return (name of the mode, QDA model):
+    #     """
+        name = "SVM_polynomial"
+        SVM_polynomial_model = SVC(kernel = 'poly', degree=2, random_state = 0)
+        return(name, SVM_polynomial_model)
+    
     def QDA(self):
         """
         create a quadratic-discriminant-analysis classifier

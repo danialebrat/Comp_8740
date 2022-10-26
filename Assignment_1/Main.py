@@ -1,5 +1,5 @@
-from Datasets import Datasets
-from ML_Methods import ML_Methods
+from Assignment_1.Datasets import Datasets
+from Assignment_1.ML_Methods import ML_Methods
 
 # Path to the folder of Datasets
 FOLDER_PATH = "C:/Users/farha/OneDrive - University of Windsor/Courses/Machine Learning & Pattern Recog/Assignment 1/Comp_8740-1/Assignment_1/Datasets"
