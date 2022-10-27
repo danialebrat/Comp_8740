@@ -137,31 +137,31 @@ class ML_Methods:
             self.confusion_metrics(cm, AS, name, datasetname)
 
     def SVM_Linear(self):
-    #     """
-    #     create a SVM classifier
-    #     :return (name of the mode, QDA model):
-    #     """
-        name = "SVM_Linear"
-        SVM_Linear_model = SVC(kernel = 'linear', random_state = 0)
-        return(name, SVM_Linear_model)
+         """
+         create a SVM classifier
+         :return (name of the mode, QDA model):
+         """
+         name = "SVM_Linear"
+         SVM_Linear_model = SVC(kernel = 'linear', random_state = 0)
+         return(name, SVM_Linear_model)
     
     def SVM_rbf(self):
-    #     """
-    #     create a SVM classifier
-    #     :return (name of the mode, QDA model):
-    #     """
-        name = "SVM_rbf"
-        SVM_rbf_model = SVC(kernel = 'rbf', random_state = 0)
-        return(name, SVM_rbf_model)
+         """
+         create a SVM classifier
+         :return (name of the mode, QDA model):
+         """
+         name = "SVM_rbf"
+         SVM_rbf_model = SVC(kernel = 'rbf', random_state = 0)
+         return(name, SVM_rbf_model)
     
     def SVM_polynomial(self):
-    #     """
-    #     create a SVM classifier
-    #     :return (name of the mode, QDA model):
-    #     """
-        name = "SVM_polynomial"
-        SVM_polynomial_model = SVC(kernel = 'poly', degree=2, random_state = 0)
-        return(name, SVM_polynomial_model)
+         """
+         create a SVM classifier
+         :return (name of the mode, QDA model):
+         """
+         name = "SVM_polynomial"
+         SVM_polynomial_model = SVC(kernel = 'poly', degree=2, random_state = 0)
+         return(name, SVM_polynomial_model)
 
     def data_spliting(self, x, y, test_size=0.2, random_state=1):
         """
