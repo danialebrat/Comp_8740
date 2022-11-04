@@ -1,6 +1,8 @@
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis, LinearDiscriminantAnalysis
 from sklearn.naive_bayes import GaussianNB, BernoulliNB, MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn import tree
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import MinMaxScaler
@@ -9,9 +11,13 @@ import numpy as np
 from sklearn.model_selection import StratifiedKFold, cross_val_score, RepeatedKFold
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.wrappers.scikit_learn import KerasClassifier
+from sklearn.neural_network import MLPClassifier
 
 
-PLOT_PATH = "Assignment_1/Plots/"
+PLOT_PATH = "C:/Users/User/PycharmProjects/Comp_8740/Assignment_1/Assignment_3/Plots/"
 
 
 class ML_Methods:
@@ -20,57 +26,6 @@ class ML_Methods:
         self.name = name
         self.dataset = dataset
 
-    def trainValSplit_Kfold(self, dataset, num_repeat=1, num_split=10, random_state=None):
-        """
-        Create dataset and divide dataset to train and test set with number of folding which user has desired.
-        Args:
-        ---
-            `num_repeat` (`int`, optional): How many times this folding should be repeated. Defaults to 1.
-            `num_split` (`int`, optional): Number of folding/ spliting dataset. Defaults to 10.
-            `random_state` (`random_state`, optional): The state of Randomization. Defaults to None.
-
-        Return: 4 list of datasets which are splited and folded.
-
-        Example for return:
-            out = ds.trainValCreation()
-            '''
-                out[0][0] --> the first train-set
-                ...
-                out[0][9] --> the tenth train-set
-
-                out[1][0] --> the first test_set
-                ...
-                out[1][9] --> the tenth test_set
-
-                out[2][0] --> the first train_targets
-                ...
-                out[2][9] --> the tenth train_targets
-
-                out[3][0] --> the first test_targets
-                ...
-                out[3][9] --> the tenth test_targets
-            '''
-        """
-        raw_X = dataset.iloc[:, :-1].values
-        Y = dataset.iloc[:, -1].values
-
-        scaler = MinMaxScaler()
-        X = scaler.fit_transform(raw_X)
-
-        x_trains = []
-        x_tests = []
-        y_trains = []
-        y_tests = []
-
-        kf = RepeatedKFold(n_splits=num_split, n_repeats=num_repeat, random_state=random_state, shuffle=True)
-        for train_index, test_index in kf.split(X):
-            # print("Train:", train_index, "Validation:",test_index)
-            x_trains.append(X[train_index])
-            x_tests.append(X[test_index])
-            y_trains.append(Y[train_index])
-            y_tests.append(Y[test_index])
-
-        return x_trains, x_tests, y_trains, y_tests
 
     def preprocess(self, df):
         """
@@ -99,14 +54,12 @@ class ML_Methods:
         Models = []
 
         # models
-        Models.append(self.QDA())
-        Models.append(self.LDA())
-        Models.append(self.KNN())
-        Models.append(self.Gaussian_Naive_Bayes())
-        Models.append(self.Bernoulli_Naive_Bayes())
-        Models.append(self.Multinomial_Naive_Bayes())
+        Models.append(self.Decision_Tree())
+        Models.append(self.Random_Forest())
+        Models.append(self.Deep_Neural_Network())
 
         return Models
+
 
     def Kfold_report(self, Models, x_train, y_train, dataset_name):
         """
@@ -117,8 +70,6 @@ class ML_Methods:
         :return:
         """
 
-
-
         print("**********")
         print("{} Dataset Results: ".format(dataset_name))
 
@@ -127,7 +78,7 @@ class ML_Methods:
         for name, model in Models:
             # train the models
             KFold = StratifiedKFold(n_splits=10, random_state=1, shuffle=True)
-            CrossValidation = cross_val_score(model, x_train, y_train, cv=KFold, scoring="accuracy")
+            CrossValidation = cross_val_score(model, x_train, y_train, cv=KFold, scoring='accuracy')
             results.append(CrossValidation)
             method_names.append(name)
             print(f"{name} Training Accuracy : {CrossValidation.mean()*100:.2f}%")
@@ -145,59 +96,91 @@ class ML_Methods:
 
             self.confusion_metrics(cm, AS, name, datasetname)
 
-    def QDA(self):
-        """
-        create a quadratic-discriminant-analysis classifier
-        :return (name of the mode, QDA model):
-        """
-        name = "QDA"
-        QDA_model = QuadraticDiscriminantAnalysis()
-        return (name, QDA_model)
 
-    def LDA(self):
-        """
-        create a linear-discriminant-analysis classifier
-        :return (name of the mode, QDA model):
-        """
-        name = "LDA"
-        clf = LinearDiscriminantAnalysis()
-        return (name, clf)
 
-    def KNN(self):
+    def Decision_Tree(self):
         """
-        create a KNN classifier
-        :return (name of the mode, KNN model):
+        create a Decision_Tree classifier
+        :return (name of the mode, Decision_Tree model):
         """
-        name = "KNN"
-        KNN_Model = KNeighborsClassifier(n_neighbors=10, metric='minkowski', p=2)
-        return (name, KNN_Model)
+        name = "Desicion_Tree"
+        DT_Model = tree.DecisionTreeClassifier()
+        return (name, DT_Model)
 
-    def Gaussian_Naive_Bayes(self):
-        """
-        create a Gaussian Naive Bayes classifier
-        :return (name of the mode, Naive Bayes model):
-        """
-        name = "GNB"
-        Gaussian_Naive_Model = GaussianNB()
-        return (name, Gaussian_Naive_Model)
 
-    def Bernoulli_Naive_Bayes(self):
+    def Random_Forest(self):
         """
-        create a Bernoulli Naive Bayes classifier
-        :return (name of the mode, Naive Bayes model):
+        create a Random_Forest classifier
+        :return (name of the mode, Random_Forest model):
         """
-        name = "BNB"
-        Bernoulli_Naive_Model = BernoulliNB()
-        return (name, Bernoulli_Naive_Model)
+        name = "Random_Forest"
+        RF_Model = RandomForestClassifier()
+        return (name, RF_Model)
 
-    def Multinomial_Naive_Bayes(self):
+
+    def Keras_Deep_Neural_Network(self):
         """
-        create a Multinomial Naive Bayes classifier
-        :return (name of the mode, Naive Bayes model):
+        create a Deep_Neural_Network classifier
         """
-        name = "MNB"
-        Multinomial_Naive_Model = MultinomialNB()
-        return (name, Multinomial_Naive_Model)
+
+        DNN_model = Sequential()
+
+        DNN_model.add(Dense(32, activation='relu', input_dim=2))
+        DNN_model.add(Dense(16, activation='relu'))
+        DNN_model.add(Dense(32, activation='relu'))
+
+        DNN_model.add(Dense(2, activation='sigmoid'))
+
+        DNN_model.compile(
+            optimizer='adam',
+            loss='binary_crossentropy',
+            metrics=['accuracy']
+        )
+
+        return DNN_model
+
+
+    def Deep_Neural_Network(self):
+        """
+        create a Deep_Neural_Network classifier
+        :return (name of the mode, Deep_Neural_Network model):
+        """
+        name = "Deep_Neural_Network"
+
+        DNN_model = Sequential()
+
+        DNN_model.add(Dense(32, activation='relu', input_dim=2))
+        DNN_model.add(Dense(16, activation='relu'))
+        DNN_model.add(Dense(32, activation='relu'))
+
+        DNN_model.add(Dense(2, activation='sigmoid'))
+
+        DNN_model.compile(
+            optimizer='adam',
+            loss='binary_crossentropy',
+            metrics=['accuracy']
+        )
+
+        # Wrap Keras model so it can be used by scikit-learn
+        model = KerasClassifier(DNN_model,
+                                epochs=20,
+                                batch_size=10,
+                                verbose=0)
+
+        return (name, model)
+
+
+
+
+    def Neural_Network(self):
+        """
+        create a Neural_Network classifier
+        :return (name of the mode, Neural_Network model):
+        """
+        name = "Neural_Network"
+        NN_model = MLPClassifier(hidden_layer_sizes=(12, 8), activation='relu', max_iter=20, batch_size=10, verbose=False)
+        return (name, NN_model)
+
 
     def data_spliting(self, x, y, test_size=0.2, random_state=1):
         """
@@ -240,18 +223,18 @@ class ML_Methods:
         FN = conf_matrix[1][0]
 
         # calculate the sensitivity
-        conf_sensitivity = (TP / (float(TP + FN)+ 0.000001))
+        conf_sensitivity = (TP / (float(TP + FN)+ 0.000001))*100
         # calculate the specificity
-        conf_specificity = (TN / (float(TN + FP) + 0.000001))
+        conf_specificity = (TN / (float(TN + FP) + 0.000001))*100
         # calculate PPV
-        ppv = (TP / (float(TP + FP) + 0.000001))
+        ppv = (TP / (float(TP + FP) + 0.000001))*100
         # calculate NPV
-        npv = (TN / (float(TN + FN) + 0.000001))
+        npv = (TN / (float(TN + FN) + 0.000001))*100
 
         print("**************")
         print("Classifier: {} _ Dataset: {}".format(method_name, dataset_name))
         print("PPV:{:.2f} NPV:{:.2f} Sensitivity:{:.2f} Specificity:{:.2f}".format(ppv, npv, conf_sensitivity, conf_specificity))
-        print("Accuracy Score for test_set: {:.2f} ".format(accuracy_score))
+        print("Accuracy Score for test_set: {:.2f} ".format(accuracy_score*100))
 
     def plot_decision_boundary(self, model, X, Y, model_name, dataset_name):
 

@@ -1,7 +1,5 @@
-import numpy as np
 import os
 import pandas as pd
-from sklearn.model_selection import RepeatedKFold
 
 class Datasets:
 
@@ -40,10 +38,6 @@ class Datasets:
         return df
 
 
-    # ds = ReadDataset('Datasets/moons1.csv')
-    # data_ = ds.trainValCreation()
-    #
-    # print('The end.!')
 
 
 
