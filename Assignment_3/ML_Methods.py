@@ -1,24 +1,23 @@
-from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis, LinearDiscriminantAnalysis
-from sklearn.naive_bayes import GaussianNB, BernoulliNB, MultinomialNB
-from sklearn.neighbors import KNeighborsClassifier
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 from sklearn import tree
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.svm import SVC
-from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import confusion_matrix, accuracy_score
 import numpy as np
-from sklearn.model_selection import StratifiedKFold, cross_val_score, RepeatedKFold
+from sklearn.model_selection import StratifiedKFold, cross_val_score
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.wrappers.scikit_learn import KerasClassifier
 from sklearn.neural_network import MLPClassifier
+import pandas as pd
 
 
 PLOT_PATH = "C:/Users/User/PycharmProjects/Comp_8740/Assignment_1/Assignment_3/Plots/"
-
+RESULT_PATH = "C:/Users/User/PycharmProjects/Comp_8740/Assignment_1/Assignment_3/Results/"
 
 class ML_Methods:
 
@@ -88,13 +87,24 @@ class ML_Methods:
 
     def training_models(self, Models, x_train, x_test, y_train, y_test, datasetname):
 
+        Results = []
         for name, model in Models:
             model.fit(x_train, y_train)
             predicted = model.predict(x_test)
             cm = confusion_matrix(y_test, predicted)
             AS = accuracy_score(y_test, predicted)
 
-            self.confusion_metrics(cm, AS, name, datasetname)
+            Classifier, PPV, NPV, Sensitivity, Specificity, Testing_Accuracy = self.confusion_metrics(cm, AS, name, datasetname)
+
+            Results.append([Classifier,
+                            PPV,
+                            NPV,
+                            Sensitivity,
+                            Specificity,
+                            Testing_Accuracy])
+
+        # Storing the result
+        self.storing_results(Results, datasetname)
 
 
 
@@ -127,9 +137,11 @@ class ML_Methods:
 
         DNN_model.add(Dense(32, activation='relu', input_dim=2))
         DNN_model.add(Dense(16, activation='relu'))
+        DNN_model.add(Dense(8, activation='relu'))
+        DNN_model.add(Dense(16, activation='relu'))
         DNN_model.add(Dense(32, activation='relu'))
 
-        DNN_model.add(Dense(2, activation='sigmoid'))
+        DNN_model.add(Dense(1, activation='relu'))
 
         DNN_model.compile(
             optimizer='adam',
@@ -147,23 +159,9 @@ class ML_Methods:
         """
         name = "Deep_Neural_Network"
 
-        DNN_model = Sequential()
-
-        DNN_model.add(Dense(32, activation='relu', input_dim=2))
-        DNN_model.add(Dense(16, activation='relu'))
-        DNN_model.add(Dense(32, activation='relu'))
-
-        DNN_model.add(Dense(2, activation='sigmoid'))
-
-        DNN_model.compile(
-            optimizer='adam',
-            loss='binary_crossentropy',
-            metrics=['accuracy']
-        )
-
         # Wrap Keras model so it can be used by scikit-learn
-        model = KerasClassifier(DNN_model,
-                                epochs=20,
+        model = KerasClassifier(build_fn=self.Keras_Deep_Neural_Network,
+                                epochs=15,
                                 batch_size=10,
                                 verbose=0)
 
@@ -223,18 +221,23 @@ class ML_Methods:
         FN = conf_matrix[1][0]
 
         # calculate the sensitivity
-        conf_sensitivity = (TP / (float(TP + FN)+ 0.000001))*100
+        conf_sensitivity = round((TP / (float(TP + FN)+ 0.000001))*100, 2)
         # calculate the specificity
-        conf_specificity = (TN / (float(TN + FP) + 0.000001))*100
+        conf_specificity = round((TN / (float(TN + FP) + 0.000001))*100, 2)
         # calculate PPV
-        ppv = (TP / (float(TP + FP) + 0.000001))*100
+        ppv = round((TP / (float(TP + FP) + 0.000001))*100, 2)
         # calculate NPV
-        npv = (TN / (float(TN + FN) + 0.000001))*100
+        npv = round((TN / (float(TN + FN) + 0.000001))*100, 2)
+        # accuracy_score
+        accuracy = round(accuracy_score*100, 2)
 
         print("**************")
         print("Classifier: {} _ Dataset: {}".format(method_name, dataset_name))
         print("PPV:{:.2f} NPV:{:.2f} Sensitivity:{:.2f} Specificity:{:.2f}".format(ppv, npv, conf_sensitivity, conf_specificity))
-        print("Accuracy Score for test_set: {:.2f} ".format(accuracy_score*100))
+        print("Accuracy Score for test_set: {:.2f} ".format(accuracy))
+
+        return method_name, ppv, npv, conf_sensitivity, conf_specificity, accuracy
+
 
     def plot_decision_boundary(self, model, X, Y, model_name, dataset_name):
 
@@ -265,6 +268,29 @@ class ML_Methods:
         fname = PLOT_PATH + title + ".png"
         plt.savefig(fname, dpi=100)
         plt.close('all')
+
+
+    def storing_results(self, Results , dataset_name):
+        """
+        Storing the results in a csv file
+        :return:
+        """
+
+        info = pd.DataFrame(Results, columns=['Classifier', 'PPV', 'NPV', 'Sensitivity', 'Specificity','Testing_Accuracy'])
+        self.store(info, dest=RESULT_PATH, name=dataset_name)
+
+
+    def store(self, df, dest, name):
+        """
+        Storing the results as an excel file in a folder
+        :param dest:
+        :param name:
+        :return:
+        """
+        path = dest + name + ".xlsx"
+
+        df.to_excel(path)
+
 
 
 
