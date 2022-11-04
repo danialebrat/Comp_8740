@@ -10,7 +10,7 @@ from sklearn.model_selection import StratifiedKFold, cross_val_score
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.wrappers.scikit_learn import KerasClassifier
 from sklearn.neural_network import MLPClassifier
 import pandas as pd
@@ -135,11 +135,12 @@ class ML_Methods:
 
         DNN_model = Sequential()
 
-        DNN_model.add(Dense(32, activation='relu', input_dim=2))
-        DNN_model.add(Dense(16, activation='relu'))
-        DNN_model.add(Dense(8, activation='relu'))
-        DNN_model.add(Dense(16, activation='relu'))
+        DNN_model.add(Dense(64, activation='relu', input_dim=2))
+        DNN_model.add(Dropout(0.1))
         DNN_model.add(Dense(32, activation='relu'))
+        DNN_model.add(Dropout(0.2))
+        DNN_model.add(Dense(64, activation='relu'))
+        DNN_model.add(Dropout(0.3))
 
         DNN_model.add(Dense(1, activation='relu'))
 
@@ -161,23 +162,12 @@ class ML_Methods:
 
         # Wrap Keras model so it can be used by scikit-learn
         model = KerasClassifier(build_fn=self.Keras_Deep_Neural_Network,
-                                epochs=15,
-                                batch_size=10,
+                                epochs=20,
+                                batch_size=16,
                                 verbose=0)
 
         return (name, model)
 
-
-
-
-    def Neural_Network(self):
-        """
-        create a Neural_Network classifier
-        :return (name of the mode, Neural_Network model):
-        """
-        name = "Neural_Network"
-        NN_model = MLPClassifier(hidden_layer_sizes=(12, 8), activation='relu', max_iter=20, batch_size=10, verbose=False)
-        return (name, NN_model)
 
 
     def data_spliting(self, x, y, test_size=0.2, random_state=1):
