@@ -1,7 +1,7 @@
 
 # this code is not running properly
 #%%
-import My_RMRM
+import mRMR_Feature_Selector
 
 import os
 import numpy as np
@@ -11,12 +11,12 @@ import pickle as pk # for saving the list
 from sklearn import preprocessing
 from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVC
-from sklearn.feature_selection import SelectKBest
-from sklearn.feature_selection import chi2, mutual_info_classif
+# from sklearn.feature_selection import SelectKBest
+# from sklearn.feature_selection import chi2, mutual_info_classif
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import confusion_matrix, accuracy_score
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 ################################################################
 #%%
 #Read the dataset
@@ -58,7 +58,7 @@ y = dataset['Class']
 # IT TAKES LONG TIMES TO RUN
 #%% 
 
-mrmr1 = My_RMRM.mrmr_classif(X = X, y=y, K=500)
+mrmr1 = mRMR_Feature_Selector.mrmr_classif(X = X, y=y, K=500)
 print('List of features selected by mRMR :', mrmr1)
 # print('Reduced number of features:', X_kbest.shape)
 
