@@ -6,6 +6,7 @@ import My_RMRM
 import os
 import numpy as np
 import pandas as pd
+import pickle as pk # for saving the list
 
 from sklearn import preprocessing
 from sklearn.preprocessing import LabelEncoder
@@ -15,7 +16,6 @@ from sklearn.feature_selection import chi2, mutual_info_classif
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import confusion_matrix, accuracy_score
-
 import matplotlib.pyplot as plt
 ################################################################
 #%%
@@ -53,51 +53,60 @@ number_of_features_as_K = 500
 X = dataset.drop('Class',axis=1)
 y = dataset['Class']
 
-################################################################
-#%%
+###############################################################
+# DO NOT RUN THIS SECTION UNTIL YOU NEED TO RECACULATE THE RMRM FEATURE SELECTION,
+# IT TAKES LONG TIMES TO RUN
+#%% 
 
 mrmr1 = My_RMRM.mrmr_classif(X = X, y=y, K=500)
-print('Original number of features:', X.shape)
+print('List of features selected by mRMR :', mrmr1)
 # print('Reduced number of features:', X_kbest.shape)
+
+
+################################################################
+#%% 
+# saving mrmr1 features as a file for loading later
+with open('mrmr_features', 'wb') as fp:  # pickling
+    pk.dump(mrmr1, fp)
+
+
+################################################################
+#%% 
+# loading mrmr1 featers from the file
+with open('mrmr_features', 'rb') as fp:  # unpickling
+    mrmr1 = pk.load(fp)
 
 ################################################################
 #%%
+X_rmrm = X[mrmr1]
+X_train, X_test, y_train, y_test = train_test_split(X_rmrm, y, test_size = 0.2, random_state = 42)
 
-X_train, X_test, y_train, y_test = train_test_split(X_kbest, y, test_size = 0.2, random_state = 42)
-X_train_IG, X_test_IG, y_train_IG, y_test_IG = train_test_split(X_kbest_IG, y, test_size = 0.2, random_state = 42)
-print(y_test.unique())
-print(y_test_IG.unique())
+print('type of targets', y_test.unique())
 
+
+################################################################
+#%%
 # model selection
-
-classifier = SVC(kernel = 'rbf', random_state = 42, decision_function_shape='ovr')
-classifier.fit(X_train, y_train)
-classifier_IG = SVC(kernel = 'rbf', random_state = 42, decision_function_shape='ovr')
-classifier_IG.fit(X_train_IG, y_train_IG)
+clf = SVC(kernel = 'rbf', random_state = 42, decision_function_shape='ovr')
+clf.fit(X_train, y_train)
 
 ################################################################
 #%%
 # Confusion matrix
 
-y_pred = classifier.predict(X_test)
+y_pred = clf.predict(X_test)
 cm = confusion_matrix(y_test, y_pred)
 print(cm)
 
-y_pred_IG = classifier.predict(X_test_IG)
-cm_IG = confusion_matrix(y_test_IG, y_pred_IG)
-print(cm_IG)
 
 ################################################################
 #%%
 # 10-folded cross validation and metric calculation
 
-accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10)
+accuracies = cross_val_score(estimator = clf, X = X_train, y = y_train, cv = 10)
 print("Accuracy: {:.2f} %".format(accuracies.mean()*100))
 print("Standard Deviation: {:.2f} %".format(accuracies.std()*100))
 
-accuracie_IG = cross_val_score(estimator = classifier, X = X_train_IG, y = y_train_IG, cv = 10)
-print("IG Accuracy: {:.2f} %".format(accuracie_IG.mean()*100))
-print("IG Standard Deviation: {:.2f} %".format(accuracie_IG.std()*100))
 
 ################################################################
 #%%
@@ -111,15 +120,6 @@ print(FN)
 print(TP)
 print(TN)
 
-FP_IG = cm_IG.sum(axis=0) - np.diag(cm_IG)  
-FN_IG = cm_IG.sum(axis=1) - np.diag(cm_IG)
-TP_IG = np.diag(cm_IG)
-TN_IG = cm_IG.sum() - (FP + FN + TP)
-
-print(FP_IG)
-print(FN_IG)
-print(TP_IG)
-print(TN_IG)
 
 # Sensitivity, hit rate, recall, or true positive rate
 TPR = TP/(TP+FN)
@@ -139,33 +139,10 @@ FDR = FP/(TP+FP)
 # Overall accuracy
 ACC = (TP+TN)/(TP+FP+FN+TN)
 
-
-# Sensitivity, hit rate, recall, or true positive rate
-TPR_IG = TP_IG/(TP_IG+FN_IG)
-# Specificity or true negative rate
-TNR_IG = TN_IG/(TN_IG+FP_IG) 
-# Precision or positive predictive value
-PPV_IG = TP_IG/(TP+FP_IG)
-# Negative predictive value
-NPV_IG = TN_IG/(TN_IG+FN_IG)
-# Fall out or false positive rate
-FPR_IG = FP_IG/(FP_IG+TN_IG)
-# False negative rate
-FNR_IG = FN_IG/(TP_IG+FN_IG)
-# False discovery rate
-FDR_IG = FP_IG/(TP_IG+FP_IG)
-
-
-# Overall accuracy
-ACC_IG = (TP_IG+TN_IG)/(TP_IG+FP_IG+FN_IG+TN_IG)
-
 print("PPV:{}\nNPV:{}\nSensitivity:{}\nSpecificity:{}".format(PPV, NPV, TPR, TNR))
 print('\n')
 print("Accuracy:",ACC)
 
-print("\n\n\nPPV_IG:{}\nNPV_IG:{}\nSensitivity_IG:{}\nSpecificity_IG:{}".format(PPV_IG, NPV_IG, TPR_IG, TNR_IG))
-print('\n')
-print("Accuracy_IG:",ACC_IG)
 
 avg_PPV  = np.average(PPV, axis=None, weights=None, returned=False)
 avg_NPV  = np.average(NPV, axis=None, weights=None, returned=False)
@@ -174,12 +151,6 @@ avg_TNR  = np.average(TNR, axis=None, weights=None, returned=False)
 avg_ACC  = np.average(ACC, axis=None, weights=None, returned=False)
 print("PPV:{:.2f}\nNPV:{:.2f}\nSensitivity:{:.2f}\nSpecificity:{:.2f}\nAccuracy:{:.2f}".format(avg_PPV, avg_NPV, avg_TPR, avg_TNR, avg_ACC))
 
-avg_PPV_IG  = np.average(PPV_IG, axis=None, weights=None, returned=False)
-avg_NPV_IG  = np.average(NPV_IG, axis=None, weights=None, returned=False)
-avg_TPR_IG  = np.average(TPR_IG, axis=None, weights=None, returned=False)
-avg_TNR_IG  = np.average(TNR_IG, axis=None, weights=None, returned=False)
-avg_ACC_IG  = np.average(ACC_IG, axis=None, weights=None, returned=False)
-print("\nPPV:{:.2f}\nNPV:{:.2f}\nSensitivity:{:.2f}\nSpecificity:{:.2f}\nAccuracy:{:.2f}".format(avg_PPV_IG, avg_NPV_IG, avg_TPR_IG, avg_TNR_IG, avg_ACC_IG))
 
 ################################################################
 #%%
