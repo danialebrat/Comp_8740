@@ -53,7 +53,7 @@ y = dataset['Class']
 # DO NOT RUN THIS SECTION UNTIL YOU NEED TO RECACULATE THE RMRM FEATURE SELECTION,
 # IT TAKES LONG TIMES TO RUN
 #%% 
-number_of_features_as_K = [500, 1000, 1500, 2000, 2500, 3000, 3500, 4000]
+number_of_features_as_K = [500, 1000, 1500]
 mrmr = {}
 for i, k in enumerate(number_of_features_as_K):
     mrmr[str(k)] = mRMR_Feature_Selector.mrmr_classif(X = X, y=y, K=k)
@@ -62,6 +62,7 @@ for i, k in enumerate(number_of_features_as_K):
 ################################################################
 #%% 
 # saving mrmr1 features as a file for loading later
+number_of_features_as_K = [500, 1000, 1500]
 for _, k in enumerate(number_of_features_as_K):
     with open('mrmr_features_{}'.format(str(k)), 'wb') as fp:  # pickling
         pk.dump(mrmr[str(k)], fp)
@@ -78,34 +79,50 @@ for _, k in enumerate(number_of_features_as_K):
 
 ################################################################
 #%%
-X_rmrm = X[mrmr1]
-X_train, X_test, y_train, y_test = train_test_split(X_rmrm, y, test_size = 0.2, random_state = 42)
+X_mrmr = {}
+X_train = {}
+X_test = {}
+y_train = {}
+y_test = {}
+for _, k in enumerate(number_of_features_as_K):
+    X_mrmr[str(k)] = X[mrmr[str(k)]]
+    X_train[str(k)], X_test[str(k)], y_train[str(k)], y_test[str(k)] = train_test_split(X_mrmr[mrmr[str(k)]], 
+                                                                                        y[mrmr[str(k)]], 
+                                                                                        test_size = 0.2, 
+                                                                                        random_state = 42)
 
-print('type of targets', y_test.unique())
+
+print('type of targets', y_test[str(k)].unique())
 
 
 ################################################################
 #%%
 # model selection
-clf = SVC(kernel = 'rbf', random_state = 42, decision_function_shape='ovr')
-clf.fit(X_train, y_train)
+clf = {}
+for _, k in enumerate(number_of_features_as_K):
+    clf = SVC(kernel = 'rbf', random_state = 42, decision_function_shape='ovr')
+    clf.fit(X_train[str(k)], y_train[str(k)])
 
 ################################################################
 #%%
-# Confusion matrix
-
-y_pred = clf.predict(X_test)
-cm = confusion_matrix(y_test, y_pred)
-print(cm)
+y_pred = {}
+cm = {}
+for _, k in enumerate(number_of_features_as_K):
+    y_pred[str(k)] = clf.predict(X_test[str(k)])
+    # Confusion matrix
+    cm[str(k)] = confusion_matrix(y_test[str(k)], y_pred[str(k)])
+    
+    print('confusion matrix for {} features =\n {}'.format(k, cm[str(k)]))
 
 
 ################################################################
 #%%
 # 10-folded cross validation and metric calculation
-
-accuracies = cross_val_score(estimator = clf, X = X_train, y = y_train, cv = 10)
-print("Accuracy: {:.2f} %".format(accuracies.mean()*100))
-print("Standard Deviation: {:.2f} %".format(accuracies.std()*100))
+accuracies = {}
+for _, k in enumerate(number_of_features_as_K):
+    accuracies[str(k)] = cross_val_score(estimator = clf, X = X_train[str(k)], y = y_train[str(k)], cv = 10)
+    print("Accuracy for {} features : {:.2f} %".format(k, accuracies[str(k)].mean()*100))
+    print("Standard Deviation for {} features : {:.2f} %".format(k, accuracies[str(k)].std()*100))
 
 
 ################################################################
