@@ -46,10 +46,6 @@ X_train_minmax = min_max_scaler.fit_transform(X)
 
 ################################################################
 #%%
-
-number_of_features_as_K = 500
-
-
 X = dataset.drop('Class',axis=1)
 y = dataset['Class']
 
@@ -57,24 +53,28 @@ y = dataset['Class']
 # DO NOT RUN THIS SECTION UNTIL YOU NEED TO RECACULATE THE RMRM FEATURE SELECTION,
 # IT TAKES LONG TIMES TO RUN
 #%% 
-
-mrmr1 = mRMR_Feature_Selector.mrmr_classif(X = X, y=y, K=500)
-print('List of features selected by mRMR :', mrmr1)
-# print('Reduced number of features:', X_kbest.shape)
-
+number_of_features_as_K = [500, 1000, 1500, 2000, 2500, 3000, 3500, 4000]
+mrmr = {}
+for i, k in enumerate(number_of_features_as_K):
+    mrmr[str(k)] = mRMR_Feature_Selector.mrmr_classif(X = X, y=y, K=k)
+# print('List of features selected by mRMR :', mrmr)
 
 ################################################################
 #%% 
 # saving mrmr1 features as a file for loading later
-with open('mrmr_features', 'wb') as fp:  # pickling
-    pk.dump(mrmr1, fp)
-
+for _, k in enumerate(number_of_features_as_K):
+    with open('mrmr_features_{}'.format(str(k)), 'wb') as fp:  # pickling
+        pk.dump(mrmr[str(k)], fp)
 
 ################################################################
 #%% 
 # loading mrmr1 featers from the file
-with open('mrmr_features', 'rb') as fp:  # unpickling
-    mrmr1 = pk.load(fp)
+for _, k in enumerate(number_of_features_as_K):
+    with open('mrmr_features_{}'.format(str(k)), 'rb') as fp:  # unpickling
+        pk.dump(mrmr[str(k)], fp)
+
+# with open('mrmr_features', 'rb') as fp:  # unpickling
+#     mrmr1 = pk.load(fp)
 
 ################################################################
 #%%
@@ -160,3 +160,5 @@ print("PPV:{:.2f}\nNPV:{:.2f}\nSensitivity:{:.2f}\nSpecificity:{:.2f}\nAccuracy:
 
 
 
+
+# %%
