@@ -15,8 +15,8 @@ from sklearn.neural_network import MLPClassifier
 import pandas as pd
 
 
-PLOT_PATH = "C:/Users/User/PycharmProjects/Comp_8740/Assignment_1/Assignment_3/Plots/"
-RESULT_PATH = "C:/Users/User/PycharmProjects/Comp_8740/Assignment_1/Assignment_3/Results/"
+PLOT_PATH = os.getcwd() + "/Assignment_3/Plots/"
+RESULT_PATH = os.getcwd() + "/Assignment_3/Results/"
 
 class ML_Methods:
 
