@@ -1,5 +1,9 @@
-from Assignment_3.Datasets import Datasets
-from Assignment_3.ML_Methods import ML_Methods
+# import pip
+# pip.main(['install', 'tensorflow'])
+import os
+os.chdir(os.getcwd() + '/')
+from Datasets import Datasets
+from ML_Methods import ML_Methods
 
 # Path to the folder of Datasets
 FOLDER_PATH = "C:/Users/User/PycharmProjects/Comp_8740/Assignment_1/Assignment_3/Datasets"
@@ -34,14 +38,3 @@ if __name__ == "__main__":
         for model_name, model in Models:
 
             method.plot_decision_boundary(model, X, Y, model_name, name)
-
-
-
-
-
-
-
-
-
-
-

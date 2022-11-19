@@ -1,6 +1,5 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-
 from sklearn import tree
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import MinMaxScaler
@@ -135,11 +134,11 @@ class ML_Methods:
 
         DNN_model = Sequential()
 
-        DNN_model.add(Dense(64, activation='relu', input_dim=2))
+        DNN_model.add(Dense(128, activation='relu', input_dim=2))
         DNN_model.add(Dropout(0.1))
-        DNN_model.add(Dense(32, activation='relu'))
-        DNN_model.add(Dropout(0.2))
         DNN_model.add(Dense(64, activation='relu'))
+        DNN_model.add(Dropout(0.2))
+        DNN_model.add(Dense(32, activation='relu'))
         DNN_model.add(Dropout(0.3))
 
         DNN_model.add(Dense(1, activation='relu'))
