@@ -3,11 +3,12 @@ pip.main(['install', 'tensorflow'])
 pip.main(['install', 'openpyxl'])
 import os
 os.chdir(os.getcwd() + '/')
-from Datasets import Datasets
 from ML_Methods import ML_Methods
 
+DATA_SET = ""
+
 # Path to the folder of Datasets
-FOLDER_PATH = os.getcwd() + "/Assignment_3/Datasets"
+DATASET_PATH = os.getcwd() + "/Datasets/"
 
 
 if __name__ == "__main__":
