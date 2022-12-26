@@ -4,12 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="559148a5-d9dd-41aa-8a28-4bffb12584cd" name="Changes" comment="Starting the final project">
+    <list default="true" id="559148a5-d9dd-41aa-8a28-4bffb12584cd" name="Changes" comment="Adding interpretability, EDA">
       <change beforePath="$PROJECT_DIR$/.idea/Comp_8740.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Comp_8740.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Final_Project/Information_gain_Danial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Final_Project/Information_gain_Danial.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Final_Project/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Final_Project/Main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Final_Project/mrmr.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Final_Project/Interpretability.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Final_Project/Interpretability.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,14 +33,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/Users/dania/PycharmProjects",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/dania/PycharmProjects&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\dania\PycharmProjects\Comp_8740\Final_Project" />
@@ -66,11 +65,26 @@
       <option name="project" value="LOCAL" />
       <updated>1670834796469</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Starting the final project">
+      <created>1671908946621</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1671908946621</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Adding interpretability, EDA">
+      <created>1671909013370</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1671909013370</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Starting the final project" />
-    <option name="LAST_COMMIT_MESSAGE" value="Starting the final project" />
+    <MESSAGE value="Adding interpretability, EDA" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adding interpretability, EDA" />
   </component>
 </project>
